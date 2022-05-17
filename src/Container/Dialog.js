@@ -1,99 +1,95 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Data from './data';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import * as yup from 'yup';
+import { Form, Formik, useFormik } from 'formik';
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
-}));
-
-const BootstrapDialogTitle = (props) => {
-  const { children, onClose, ...other } = props;
-
-  return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-      {children}
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </DialogTitle>
-  );
-};
-
-BootstrapDialogTitle.propTypes = {
-  children: PropTypes.node,
-  onClose: PropTypes.func.isRequired,
-};
-
-export default function CustomizedDialogs() {
+export default function FormDialog() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
 
+  const handleClickSubmit = (values) => {
+    let localdata = JSON.parse(localStorage.getItem("Medicine"))
+
+    if (localdata === null) {
+        localStorage.setItem("Medicine", JSON.stringify([values]))
+    } else { 
+        localdata.push(values)
+        localStorage.setItem("Medicine", JSON.stringify(localdata))
+    }
+  }
+
+
+
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
+        Add Medicine
       </Button>
-      <BootstrapDialog
-        onClose={handleClose}
-        aria-labelledby="customized-dialog-title"
-        open={open}
-      >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Modal title
-        </BootstrapDialogTitle>
-        <DialogContent dividers>
-         {/* <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-            magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-            ullamcorper nulla non metus auctor fringilla.
-          </Typography>*/}
-        </DialogContent> 
-        <Data />
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent>
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            name='Medicine name'
+            label="Medicine Name"
+            type="name"
+            fullWidth
+            variant="standard"
+            
+          />
+          
+          <TextField
+            autoFocus
+            margin="dense"
+            id="price"
+            name='price'
+            label="Medicine price"
+            type="Number"
+            fullWidth
+            variant="standard"
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="quntity"
+            name='quntity'
+            label="Medicine quntity"
+            type="Number"
+            fullWidth
+            variant="standard"
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            name='expiry'
+            id="expiry"
+            type="date"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
-          </Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClickSubmit}>Submit</Button>
         </DialogActions>
-      </BootstrapDialog>
+      </Dialog>
     </div>
   );
 }
