@@ -1,13 +1,16 @@
 import  Dialog  from './Dialog';
 import React from 'react';
 
-function Medicin(props) {
+function Medicine(props) {
     return (
         <div>
-            <h1>Medicin</h1>
+           <center>
+           <h1>Medicine</h1>
             <Dialog />
+           </center>
         </div>
+        
     );
 }
 
-export default Medicin;
+export default Medicine;
