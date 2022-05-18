@@ -1,15 +1,19 @@
 import * as React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import * as yup from 'yup';
-import { Form, Formik, useFormik } from 'formik';
+
 
 export default function FormDialog() {
   const [open, setOpen] = React.useState(false);
+  const [name, setName] = React.useState('');
+  const [price, setprice] = React.useState('');
+  const [quntity, setquntity] = React.useState('');
+  const [expiry, setexpiry] = React.useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -19,15 +23,22 @@ export default function FormDialog() {
     setOpen(false);
   };
 
-  const handleClickSubmit = (values) => {
-    let localdata = JSON.parse(localStorage.getItem("Medicine"))
+  const handleClickSubmit = () => {
+    let localdata = JSON.parse(localStorage.getItem("Medicine"));
 
-    if (localdata === null) {
-        localStorage.setItem("Medicine", JSON.stringify([values]))
-    } else { 
-        localdata.push(values)
-        localStorage.setItem("Medicine", JSON.stringify(localdata))
+    let data = {
+      name,
+      price,
+      quntity,
+      expiry,
     }
+  }
+  console.log(data);
+  if (localdata === null) {
+    localStorage.setItem("Medicine", JSON.stringify([loacaldata]))
+  } else {
+    localdata.push(data)
+    localStorage.setItem("Medicine", JSON.stringify(data))
   }
 
 
@@ -50,9 +61,9 @@ export default function FormDialog() {
             type="name"
             fullWidth
             variant="standard"
-            
+
           />
-          
+
           <TextField
             autoFocus
             margin="dense"
