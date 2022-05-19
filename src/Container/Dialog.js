@@ -6,6 +6,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import * as yup from 'yup';
+import { Form, Formik, FormikProvider, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
 
 
@@ -14,9 +16,31 @@ export default function FormDialog() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [price, setprice] = useState('');
-  const [quntity, setquntity] = useState('');
+  const [quantity, setquantity] = useState('');
   const [expiry, setexpiry] = useState('');
+  const [data, setdata] = useState('');
 
+  let medicine = {
+    email: yup.string().required(' please enter Name'),
+    price: yup.string().required('please enter price'),
+    quantity: yup.string().required('please enter quantity'),
+    expiry: yup.string().required('please enter expiry'),
+  }
+   let schema = yup.object().shape(medicine);
+  
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      price: '',
+      quantity: '',
+      expiry: ''
+    },
+    validationSchema: schema,
+    onSubmit: (values, { resetForm }) => {
+
+      resetForm();
+    }
+  })
   const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
@@ -43,25 +67,19 @@ export default function FormDialog() {
       headerName: 'Full name',
       sortable: false,
       width: 160,
-     
+
     },
   ];
 
-const laoddata = () => {
-  let laocaldata = JSON.parse(loacalStorge.getItem("medicine"))
-}
+  const laoddata = () => {
+    let laocaldata = JSON.parse(localStorage.getItem("medicine"))
+  }
+  useEffect = () => ({
 
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
+  },
+    [])
+
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -71,14 +89,12 @@ const laoddata = () => {
     setOpen(false);
   };
 
-  const handleClickSubmit = () => {
+  const handleClickSubmit = (value) => {
     let localdata = JSON.parse(localStorage.getItem("Medicine"));
 
     let data = {
-      name,
-      price,
-      quntity,
-      expiry,
+      id:Math.floor(Math.random() * 10),
+      ...value
     }
     console.log(data);
     if (localdata === null) {
@@ -87,75 +103,92 @@ const laoddata = () => {
       localdata.push(data)
       localStorage.setItem("Medicine", JSON.stringify(localdata))
     }
-  
+
   }
- 
+
 
 
   return (
-    
+
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
         Add Medicine
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
+        <Formik value={formik}>
+          <Form onSubmit={formik.handleSubmit}>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                name='Medicine name'
+                label="Medicine Name"
+                type="name"
+                fullWidth
+                variant="standard"
+                onChange={formik.handleBlur}
+                defaultValue={formik.values.name}
+                helperText={formik.errors.name}
+                error={formik.errors.name ? true : false}
+              />
 
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            name='Medicine name'
-            label="Medicine Name"
-            type="name"
-            fullWidth
-            variant="standard"
-            onChange={(e)=> setName (e.target.value)}
+              <TextField
+                autoFocus
+                margin="dense"
+                id="price"
+                name='price'
+                label="Medicine price"
+                type="Number"
+                fullWidth
+                variant="standard"
+                onChange={formik.handleBlur}
+              
+              />
 
-          /> 
+              <TextField
+                autoFocus
+                margin="dense"
+                id="quantity"
+                name='quantity'
+                label="Medicine quantity"
+                type="Number"
+                fullWidth
+                variant="standard"
+                onChange={formik.handleBlur}
+              
+              />
 
-          <TextField
-            autoFocus
-            margin="dense"
-            id="price"
-            name='price'
-            label="Medicine price"
-            type="Number"
-            fullWidth
-            variant="standard"
-            onChange={(e)=> setprice (e.target.value)}
-          />
+              <TextField
+                autoFocus
+                margin="dense"
+                name='expiry'
+                id="expiry"
+                type="date"
+                fullWidth
+                variant="standard"
 
-          <TextField
-            autoFocus
-            margin="dense"
-            id="quntity"
-            name='quntity'
-            label="Medicine quntity"
-            type="Number"
-            fullWidth
-            variant="standard"
-            onChange={(e)=> setquntity (e.target.value)}
-          />
+              />
 
-          <TextField
-            autoFocus
-            margin="dense"
-            name='expiry'
-            id="expiry"
-            type="date"
-            fullWidth
-            variant="standard"
-            onChange={(e)=> setexpiry (e.target.value)}
+      <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleClickSubmit}>Submit</Button>
+            </DialogActions>
+          </DialogContent>
+        </Form>
+      </Formik>
 
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClickSubmit}>Submit</Button>
-        </DialogActions>
       </Dialog>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={data}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          checkboxSelection
+        />
+      </div>
     </div>
   );
 }
