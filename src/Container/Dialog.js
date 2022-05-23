@@ -12,13 +12,15 @@ import { Form, Formik, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 
 
 export default function Medicine() {
   const [open, setOpen] = React.useState(false);
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
+  const [update, setUpdate] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -41,10 +43,10 @@ export default function Medicine() {
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      price: '',
-      quantity: '',
-      expiry: ''
+      name:update.name ? update.name: '',
+      price: update.price ? update.price:'',
+      quantity: update.quantity ? update.quantity:'',
+      expiry: update.expiry ? update.expiry:''
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
@@ -86,6 +88,14 @@ export default function Medicine() {
           <DeleteIcon />
         </IconButton>
       )
+    },
+    {
+      field: 'Edit', headerName: 'Edit', width: 130,
+      renderCell: (params) => (
+        <IconButton aria-label="Edit" onClick={() => handleUpadte()}>
+          <EditIcon />
+        </IconButton>
+      )
     }
   ];
   const handleDelete = (id) => {
@@ -96,6 +106,12 @@ export default function Medicine() {
     localStorage.setItem("medicine", JSON.stringify(filterData));
 
     loadData()
+
+  }
+
+  const handleUpadte = () => {
+    setOpen(true)
+
 
   }
 
@@ -118,6 +134,8 @@ export default function Medicine() {
       <Container>
         <div>
           <center>
+          
+
             <Button variant="outlined" onClick={handleClickOpen}>
               Add Medicine
             </Button>
@@ -190,6 +208,7 @@ export default function Medicine() {
                   />
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
+                     === ?  <Button onClick={handleUpadte}>Edit</Button> :
                     <Button type="submit">Submit</Button>
                   </DialogActions>
                 </DialogContent>
