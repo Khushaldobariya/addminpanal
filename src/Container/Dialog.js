@@ -10,6 +10,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import * as yup from 'yup';
 import { Form, Formik, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 
 
@@ -58,7 +61,7 @@ export default function Medicine() {
       ...value
     }
 
-    if (localdata === null) {   
+    if (localdata === null) {
       localStorage.setItem("medicine", JSON.stringify([data]))
     } else {
       localdata.push(data)
@@ -71,13 +74,30 @@ export default function Medicine() {
   }
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+
     { field: 'name', headerName: 'Name', width: 130 },
     { field: 'price', headerName: ' Price', width: 130 },
     { field: 'quantity', headerName: 'Quantity', width: 130 },
     { field: 'expiry', headerName: 'Expiry', width: 130 },
-  {field: 'Delete', headerName: 'Delete', width: 130 },
+    {
+      field: 'Delete', headerName: 'Delete', width: 130,
+      renderCell: (params) => (
+        <IconButton aria-label="delete" onClick={() => handleDelete(params.row.id)}>
+          <DeleteIcon />
+        </IconButton>
+      )
+    }
   ];
+  const handleDelete = (id) => {
+    let localData = JSON.parse(localStorage.getItem("medicine"))
+
+    let filterData = localData.filter((v, i) => v.id !== id);
+
+    localStorage.setItem("medicine", JSON.stringify(filterData));
+
+    loadData()
+
+  }
 
   const loadData = () => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
@@ -91,27 +111,27 @@ export default function Medicine() {
     () => {
       loadData()
     },
-  [])
+    [])
 
   return (
-
-  
     <Box>
       <Container>
         <div>
           <center>
-          <Button variant="outlined" onClick={handleClickOpen}>
-            Add Medicine
-          </Button>
+            <Button variant="outlined" onClick={handleClickOpen}>
+              Add Medicine
+            </Button>
           </center>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
               rows={data}
               columns={columns}
+
               pageSize={5}
               rowsPerPageOptions={[5]}
               checkboxSelection
             />
+
           </div>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add Medicine</DialogTitle>
@@ -130,7 +150,9 @@ export default function Medicine() {
                     defaultValue={formik.values.name}
                     helperText={formik.errors.name}
                     error={formik.errors.name ? true : false}
+
                   />
+
                   <TextField
                     margin="dense"
                     id="price"
