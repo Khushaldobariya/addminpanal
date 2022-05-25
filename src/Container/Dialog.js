@@ -20,7 +20,7 @@ import EditIcon from '@mui/icons-material/Edit';
 export default function Medicine() {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = useState([]);
-  const [update, setUpdate] = useState([]);
+  const [update, setUpdate] = useState();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,15 +43,21 @@ export default function Medicine() {
 
   const formik = useFormik({
     initialValues: {
-      name:update.name ? update.name: '',
-      price: update.price ? update.price:'',
-      quantity: update.quantity ? update.quantity:'',
-      expiry: update.expiry ? update.expiry:''
+      name: '',
+      price: '',
+      quantity: '',
+      expiry: ''
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
-      handleSubmitdata(value)
+
+      if (update) {
+        handleUpdate(value)
+      } else {
+        handleSubmitdata(value)
+      }
       resetForm();
+
     }
   })
 
@@ -69,12 +75,9 @@ export default function Medicine() {
       localdata.push(data)
       localStorage.setItem("medicine", JSON.stringify(localdata))
     }
-
     setOpen(false);
     loadData()
-
   }
-
   const columns = [
 
     { field: 'name', headerName: 'Name', width: 130 },
@@ -92,7 +95,7 @@ export default function Medicine() {
     {
       field: 'Edit', headerName: 'Edit', width: 130,
       renderCell: (params) => (
-        <IconButton aria-label="Edit" onClick={() => handleUpadte()}>
+        <IconButton aria-label="Edit" onClick={() => handleUpdate(params.row)}>
           <EditIcon />
         </IconButton>
       )
@@ -104,15 +107,22 @@ export default function Medicine() {
     let filterData = localData.filter((v, i) => v.id !== id);
 
     localStorage.setItem("medicine", JSON.stringify(filterData));
-
     loadData()
-
   }
 
-  const handleUpadte = () => {
+  const handleUpdate = (value) => {
+    let localData = JSON.parse(localStorage.getItem("medicine"))
+    let udata = localData.map((l, i) => {
+      if (l.id === value.id) {
+        return (value)
+      } else {
+        return l;
+      }
+    })
+    localStorage.setItem("medicine", JSON.stringify(udata));
     setOpen(true)
-
-
+    setUpdate()
+    loadData()
   }
 
   const loadData = () => {
@@ -134,8 +144,6 @@ export default function Medicine() {
       <Container>
         <div>
           <center>
-          
-
             <Button variant="outlined" onClick={handleClickOpen}>
               Add Medicine
             </Button>
@@ -208,8 +216,10 @@ export default function Medicine() {
                   />
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                     === ?  <Button onClick={handleUpadte}>Edit</Button> :
-                    <Button type="submit">Submit</Button>
+                    {
+                      update ? <Button onClick={handleUpdate}>Update</Button> :
+                        <Button type="submit">Submit</Button>
+                    }
                   </DialogActions>
                 </DialogContent>
               </Form>
