@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import * as yup from 'yup';
-import { Form, Formik, FormikProvider, useFormik } from 'formik';
+import { Form, Formik, FormikConsumer, FormikProvider, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -24,10 +24,13 @@ export default function Medicine() {
 
   const handleClickOpen = () => {
     setOpen(true);
+    setUpdate();
   };
 
   const handleClose = () => {
     setOpen(false);
+    setUpdate();
+    formik.resetForm();
   };
 
 
@@ -73,6 +76,7 @@ export default function Medicine() {
     setOpen(false)
     setUpdate()
     loadData()
+    formik.setValues()
   }
 
   const handleSubmitdata = (value) => {
@@ -118,7 +122,7 @@ export default function Medicine() {
    const  handleEdit = (data) =>{
     setOpen(true)
     setUpdate(data)
-    Formik.setValue(data);
+    formik.setValues(data);
   }
 
 
@@ -226,7 +230,7 @@ export default function Medicine() {
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     {
-                      update ? <Button onClick={handleUpdate}>Update</Button> :
+                      update ? <Button type="submit">Update</Button> :
                         <Button type="submit">Submit</Button>
                     }
                   </DialogActions>
