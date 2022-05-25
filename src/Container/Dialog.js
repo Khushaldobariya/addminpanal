@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import * as yup from 'yup';
-import { Form, Formik, useFormik } from 'formik';
+import { Form, Formik, FormikProvider, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -60,6 +60,20 @@ export default function Medicine() {
 
     }
   })
+  const handleUpdate = (value) => {
+    let localData = JSON.parse(localStorage.getItem("medicine"))
+    let udata = localData.map((l, i) => {
+      if (l.id === value.id) {
+        return (value)
+      } else {
+        return l;
+      }
+    })
+    localStorage.setItem("medicine", JSON.stringify(udata));
+    setOpen(false)
+    setUpdate()
+    loadData()
+  }
 
   const handleSubmitdata = (value) => {
     let localdata = JSON.parse(localStorage.getItem("medicine"))
@@ -95,12 +109,19 @@ export default function Medicine() {
     {
       field: 'Edit', headerName: 'Edit', width: 130,
       renderCell: (params) => (
-        <IconButton aria-label="Edit" onClick={() => handleUpdate(params.row)}>
+        <IconButton aria-label="Edit" onClick={() => handleEdit(params.row)}>
           <EditIcon />
         </IconButton>
       )
     }
   ];
+   const  handleEdit = (data) =>{
+    setOpen(true)
+    setUpdate(data)
+    Formik.setValue(data);
+  }
+
+
   const handleDelete = (id) => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
 
@@ -110,20 +131,8 @@ export default function Medicine() {
     loadData()
   }
 
-  const handleUpdate = (value) => {
-    let localData = JSON.parse(localStorage.getItem("medicine"))
-    let udata = localData.map((l, i) => {
-      if (l.id === value.id) {
-        return (value)
-      } else {
-        return l;
-      }
-    })
-    localStorage.setItem("medicine", JSON.stringify(udata));
-    setOpen(true)
-    setUpdate()
-    loadData()
-  }
+ 
+  
 
   const loadData = () => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
