@@ -43,10 +43,10 @@ export default function Medicine() {
 
   const formik = useFormik({
     initialValues: {
-      name:update.name ? update.name: '',
-      price: update.price ? update.price:'',
-      quantity: update.quantity ? update.quantity:'',
-      expiry: update.expiry ? update.expiry:''
+      name:'',
+      price:'',
+      quantity: '',
+      expiry: ''
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
@@ -135,10 +135,14 @@ export default function Medicine() {
         <div>
           <center>
           
-
-            <Button variant="outlined" onClick={handleClickOpen}>
-              Add Medicine
-            </Button>
+{
+  update ?  <Button variant="outlined" onClick={handleClickOpen}>
+ Medicine Edit
+</Button> :
+ <Button variant="outlined" onClick={handleClickOpen}>
+ Add Medicine
+</Button>
+}
           </center>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
@@ -208,8 +212,10 @@ export default function Medicine() {
                   />
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                     === ?  <Button onClick={handleUpadte}>Edit</Button> :
-                    <Button type="submit">Submit</Button>
+                  {
+                       update?  <Button onClick={handleUpadte}>Edit</Button> :
+                       <Button type="submit">Submit</Button>
+                  }
                   </DialogActions>
                 </DialogContent>
               </Form>
