@@ -15,8 +15,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 
-
-
 export default function Medicine() {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = useState([]);
@@ -50,13 +48,35 @@ export default function Medicine() {
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
-      handleSubmitdata(value)
+      if(update){
+
+        handleUpdate(value)
+      }else{
+        handleSubmitdata(value)
+      }
       resetForm();
     }
   })
+  const handleUpdate = (value) => {
+    let localdata = JSON.parse(localStorage.getItem("medicine"));
+    
+    let udata = localdata.map((l, i) => {
+      if(l.id === value.id) {
+          return value;
+      } else {
+        return l;
+      }
+    })
+    console.log(udata);
+
+    localStorage.setItem("medicine", JSON.stringify(udata))
+    setOpen(false)
+    setUpdate()
+    loadData()
+  }
 
   const handleSubmitdata = (value) => {
-    let localdata = JSON.parse(localStorage.getItem("medicine"))
+    let localdata = JSON.parse(localStorage.getItem("medicine"));
 
     let data = {
       id: Math.floor(Math.random() * 1000),
@@ -92,12 +112,19 @@ export default function Medicine() {
     {
       field: 'Edit', headerName: 'Edit', width: 130,
       renderCell: (params) => (
-        <IconButton aria-label="Edit" onClick={() => handleUpadte()}>
+        <IconButton aria-label="Edit" onClick={() => handleEdit(params.row)}>
           <EditIcon />
         </IconButton>
       )
     }
   ];
+  const handleEdit = (data) => {
+    setOpen(true);
+    setUpdate(data);
+    formik.setValues(data);
+    // console.log(data);
+  }
+    
   const handleDelete = (id) => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
 
@@ -109,12 +136,6 @@ export default function Medicine() {
 
   }
 
-  const handleUpadte = () => {
-    setOpen(true)
-
-
-  }
-
   const loadData = () => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
 
@@ -122,6 +143,7 @@ export default function Medicine() {
       setData(localData)
     }
   }
+
 
   useEffect(
     () => {
@@ -212,10 +234,10 @@ export default function Medicine() {
                   />
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                  {
-                       update?  <Button onClick={handleUpadte}>Edit</Button> :
+                   { 
+                        update?  <Button  onClick={handleUpdate}>Edit</Button> :
                        <Button type="submit">Submit</Button>
-                  }
+                   }
                   </DialogActions>
                 </DialogContent>
               </Form>
