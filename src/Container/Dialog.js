@@ -10,6 +10,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import * as yup from 'yup';
 import { Form, Formik, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
+import DialogContentText from '@mui/material/DialogContentText';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,14 +20,25 @@ export default function Medicine() {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState([]);
+  const [ Did,setDid] = useState ();
+  const [dopen, setDopen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
+    setUpdate();
+  };
+  const handleClickDopen = (id) => {
+    setDopen(true);
+    setDid(id);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setUpdate();
+    setDopen();
+    formik.resetForm()
   };
+
 
 
   let medicine = {
@@ -104,7 +116,7 @@ export default function Medicine() {
     {
       field: 'Delete', headerName: 'Delete', width: 130,
       renderCell: (params) => (
-        <IconButton aria-label="delete" onClick={() => handleDelete(params.row.id)}>
+        <IconButton aria-label="delete" onClick={() => handleClickDopen(params.row.id)}>
           <DeleteIcon />
         </IconButton>
       )
@@ -125,14 +137,16 @@ export default function Medicine() {
     // console.log(data);
   }
     
-  const handleDelete = (id) => {
+  const handleDelete = () => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
 
-    let filterData = localData.filter((v, i) => v.id !== id);
+    let filterData = localData.filter((v, i) => v.id !== Did);
 
     localStorage.setItem("medicine", JSON.stringify(filterData));
 
+    setDopen()
     loadData()
+
 
   }
 
@@ -143,7 +157,6 @@ export default function Medicine() {
       setData(localData)
     }
   }
-
 
   useEffect(
     () => {
@@ -156,15 +169,10 @@ export default function Medicine() {
       <Container>
         <div>
           <center>
-          
-{
-  update ?  <Button variant="outlined" onClick={handleClickOpen}>
- Medicine Edit
-</Button> :
- <Button variant="outlined" onClick={handleClickOpen}>
- Add Medicine
-</Button>
-}
+                    <Button variant="outlined" onClick={handleClickOpen}>
+                  Add Medicine
+                  </Button> 
+                   
           </center>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
@@ -177,6 +185,7 @@ export default function Medicine() {
             />
 
           </div>
+    
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add Medicine</DialogTitle>
             <Formik value={formik}>
@@ -235,7 +244,8 @@ export default function Medicine() {
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                    { 
-                        update?  <Button  onClick={handleUpdate}>Edit</Button> :
+                        update?  <Button type="submit">Update</Button>
+                         :
                        <Button type="submit">Submit</Button>
                    }
                   </DialogActions>
@@ -243,6 +253,27 @@ export default function Medicine() {
               </Form>
             </Formik>
           </Dialog>
+          <div>
+  
+        <Dialog
+          open={dopen}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description" >
+          <DialogTitle id="alert-dialog-title">
+            {"Are You Sure Delete Medicine Data..? "}
+          </DialogTitle>
+          <DialogContent>
+          
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=> handleDelete()}>Yes</Button>
+            <Button onClick={handleClose} >
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
+    </div>
         </div>
       </Container>
     </Box>
