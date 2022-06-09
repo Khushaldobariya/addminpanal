@@ -19,7 +19,7 @@ export default function Medicine() {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState([]);
-  const [ Did,setDid] = useState ();
+  const [Did, setDid] = useState();
   const [dopen, setDopen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -42,9 +42,9 @@ export default function Medicine() {
 
   let medicine = {
     name: yup.string().required('enter name'),
-    price: yup.string().required('please enter price'),
-    quantity: yup.string().required('please enter quantity'),
-    expiry: yup.string().required('please enter expiry'),
+    price: yup.number().required('please enter price'),
+    quantity: yup.number().required('please enter quantity'),
+    expiry: yup.number().required('please enter expiry'),
   }
 
 
@@ -52,17 +52,17 @@ export default function Medicine() {
 
   const formik = useFormik({
     initialValues: {
-      name:'',
-      price:'',
+      name: '',
+      price: '',
       quantity: '',
       expiry: ''
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
-      if(update){
+      if (update) {
 
         handleUpdate(value)
-      }else{
+      } else {
         handleSubmitdata(value)
       }
       resetForm();
@@ -70,10 +70,10 @@ export default function Medicine() {
   })
   const handleUpdate = (value) => {
     let localdata = JSON.parse(localStorage.getItem("medicine"));
-    
+
     let udata = localdata.map((l, i) => {
-      if(l.id === value.id) {
-          return value;
+      if (l.id === value.id) {
+        return value;
       } else {
         return l;
       }
@@ -135,7 +135,7 @@ export default function Medicine() {
     formik.setValues(data);
     // console.log(data);
   }
-    
+
   const handleDelete = () => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
 
@@ -168,10 +168,10 @@ export default function Medicine() {
       <Container>
         <div>
           <center>
-                    <Button variant="outlined" onClick={handleClickOpen}>
-                  Add Medicine
-                  </Button> 
-                   
+            <Button variant="outlined" onClick={handleClickOpen}>
+              Add Medicine
+            </Button>
+
           </center>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
@@ -184,7 +184,7 @@ export default function Medicine() {
             />
 
           </div>
-    
+
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add Medicine</DialogTitle>
             <Formik value={formik}>
@@ -202,7 +202,6 @@ export default function Medicine() {
                     defaultValue={formik.values.name}
                     helperText={formik.errors.name}
                     error={formik.errors.name ? true : false}
-
                   />
 
                   <TextField
@@ -227,7 +226,6 @@ export default function Medicine() {
                     defaultValue={formik.values.quantity}
                     helperText={formik.errors.quantity}
                     error={formik.errors.quantity ? true : false}
-
                   />
                   <TextField
                     margin="dense"
@@ -242,40 +240,38 @@ export default function Medicine() {
                   />
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                   { 
-                        update?  <Button type="submit">Update</Button>
-                         :
-                       <Button type="submit">Submit</Button>
-                   }
+                    {
+                      update ? <Button type="submit">Update</Button>
+                        :
+                        <Button type="submit">Submit</Button>
+                    }
                   </DialogActions>
                 </DialogContent>
               </Form>
             </Formik>
           </Dialog>
           <div>
-  
-        <Dialog
-          open={dopen}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description" >
-          <DialogTitle id="alert-dialog-title">
-            {"Are You Sure Delete Medicine Data..? "}
-          </DialogTitle>
-          <DialogContent>
-          
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={()=> handleDelete()}>Yes</Button>
-            <Button onClick={handleClose} >
-              No
-            </Button>
-          </DialogActions>
-        </Dialog>
-    </div>
+
+            <Dialog
+              open={dopen}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description" >
+              <DialogTitle id="alert-dialog-title">
+                {" You Sure Delete Medicine Data..? "}
+              </DialogTitle>
+              <DialogContent>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => handleDelete()}>Yes</Button>
+                <Button onClick={handleClose} >
+                  No
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
         </div>
       </Container>
-    </Box>
-
+    </Box>  
   )
 }
