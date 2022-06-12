@@ -22,10 +22,12 @@ export default function Medicine() {
 
   const handleClickOpen = () => {
     setOpen(true);
+    resetForm()
   };
 
   const handleClose = () => {
     setOpen(false);
+    resetForm()
   };
 
 
@@ -91,66 +93,68 @@ export default function Medicine() {
     }
 
     setOpen(false);
-    loadData()
+
 
   }
-
   const columns = [
 
     { field: 'name', headerName: 'Name', width: 130 },
     { field: 'price', headerName: ' Price', width: 130 },
     { field: 'quantity', headerName: 'Quantity', width: 130 },
     { field: 'expiry', headerName: 'Expiry', width: 130 },
-    {
-      field: 'Delete', headerName: 'Delete', width: 130,
-      renderCell: (params) => (
-        <IconButton aria-label="delete" onClick={() => handleDelete(params.row.id)}>
-          <DeleteIcon />
-        </IconButton>
-      )
-    },
-    {
-      field: 'Edit', headerName: 'Edit', width: 130,
-      renderCell: (params) => (
-        <IconButton aria-label="Edit" onClick={() => handleEdit(params.row)}>
-          <EditIcon />
-        </IconButton>
-      )
-    }
+
+
+
+    { field: 'delete', headerName: 'Delete', width: 130,
+    renderCell: (params) => (
+      <IconButton aria-label="Delete" onClick={() => handleDelete(params.row.id)}>
+        <DeleteIcon />
+      </IconButton>
+      
+    )
+  },
+  { field: 'Edit', headerName: 'Edit', width: 130 ,
+  renderCell: (params) => (
+    <IconButton aria-label="Edit" onClick={()  => handleEdit(params.row)}>
+      <EditIcon />
+    </IconButton>
+  )
+}
+
   ];
-  const handleEdit = (data) => {
-    setOpen(true);
-    setUpdate(data);
-    formik.setValues(data);
-    // console.log(data);
-  }
-    
+
+const handleEdit = (data) => {
+  setOpen(true);
+  setUpdate(data);
+  formik.setValues(data);
+}
+
   const handleDelete = (id) => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
 
-    let filterData = localData.filter((v, i) => v.id !== id);
+    let filterdata = localData.filter((v, i) => v.id !== id);
 
-    localStorage.setItem("medicine", JSON.stringify(filterData));
+    localStorage.setItem("medicine",JSON.stringify(filterdata));
 
     loadData()
 
   }
 
-  const loadData = () => {
+  const loadData = ()  => {
     let localData = JSON.parse(localStorage.getItem("medicine"))
 
-    if (localData !== null) {
+    if (loadData !== null){
       setData(localData)
     }
   }
 
-
-  useEffect(
-    () => {
+  useEffect ( 
+    () =>{
       loadData()
     },
     [])
 
+ 
   return (
     <Box>
       <Container>
@@ -159,18 +163,17 @@ export default function Medicine() {
           
 {
   update ?  <Button variant="outlined" onClick={handleClickOpen}>
- Medicine Edit
-</Button> :
- <Button variant="outlined" onClick={handleClickOpen}>
+  Edit Medicine
+ </Button> :  <Button variant="outlined" onClick={handleClickOpen}>
  Add Medicine
 </Button>
 }
+ 
           </center>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
               rows={data}
               columns={columns}
-
               pageSize={5}
               rowsPerPageOptions={[5]}
               checkboxSelection
@@ -179,10 +182,9 @@ export default function Medicine() {
           </div>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add Medicine</DialogTitle>
-            <Formik value={formik}>
-              <Form onSubmit={formik.handleSubmit}>
+         <Formik value={formik}>
+         <Form onSubmit={formik.handleSubmit}>
                 <DialogContent>
-
                   <TextField
                     margin="dense"
                     id="name"
@@ -190,11 +192,10 @@ export default function Medicine() {
                     type="name"
                     fullWidth
                     variant="standard"
-                    onChange={formik.handleChange}
+                    onChange={formik.handleSubmit}
                     defaultValue={formik.values.name}
                     helperText={formik.errors.name}
                     error={formik.errors.name ? true : false}
-
                   />
 
                   <TextField
@@ -204,10 +205,11 @@ export default function Medicine() {
                     type="price"
                     fullWidth
                     variant="standard"
-                    onChange={formik.handleChange}
+                    onChange={formik.handleSubmit}
                     defaultValue={formik.values.price}
                     helperText={formik.errors.price}
                     error={formik.errors.price ? true : false}
+             
                   />
                   <TextField
                     margin="dense"
@@ -215,11 +217,11 @@ export default function Medicine() {
                     label="quantity"
                     fullWidth
                     variant="standard"
-                    onChange={formik.handleChange}
+                    onChange={formik.handleSubmit}
                     defaultValue={formik.values.quantity}
                     helperText={formik.errors.quantity}
                     error={formik.errors.quantity ? true : false}
-
+      
                   />
                   <TextField
                     margin="dense"
@@ -236,12 +238,13 @@ export default function Medicine() {
                     <Button onClick={handleClose}>Cancel</Button>
                    { 
                         update?  <Button  onClick={handleUpdate}>Edit</Button> :
-                       <Button type="submit">Submit</Button>
-                   }
+                      <Button type="submit">Submit</Button>
+                      }
                   </DialogActions>
                 </DialogContent>
-              </Form>
-            </Formik>
+                </Form>
+         </Formik>
+             
           </Dialog>
         </div>
       </Container>

@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MailIcon from '@mui/icons-material/Mail';
 import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
 import { NavLink } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -104,7 +105,9 @@ export default function MiniDrawer({ children }) {
     const items = [
         { lable: "Home", icon: <HomeIcon />, to: "/" },
         { lable: "mdicine", icon: <MedicalServicesIcon />, to: "/medicine" },
-        { lable: "Email", icon: <MailIcon />, to: "/Email" }
+        { lable: "Email", icon: <MailIcon />, to: "/Email" },
+        { lable: "Doctor" , icon: <PersonIcon />, to: "/Doctor" }
+
     ]
 
 
