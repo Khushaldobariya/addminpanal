@@ -1,145 +1,288 @@
-import * as React from 'react';
-import   useState  from 'react';
+ import React, { useEffect, useState } from 'react'
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import DialogContentText from '@mui/material/DialogContentText';
 import * as yup from 'yup';
-import { Form, Formik , useFormik } from 'formik';
+import { Form, Formik, useFormik } from 'formik';
+import { DataGrid } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CreateIcon from '@mui/icons-material/Create';
 
-export default function FormDialog() {
+
+export default function Doctors() {
   const [open, setOpen] = React.useState(false);
-  const [data,setData] = React.useState();
+  const [data, setData] = useState([]);
+  const [Update, setUpdate] = useState();
+  const [dopen, setDopen] = React.useState(false);
+  const [did, setDid] = useState()
+
+
+  const handleClickDopen = (id) => {
+    setDopen(true);
+    setDid(id);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
+    setUpdate()
+
   };
 
   const handleClose = () => {
     setOpen(false);
+    setUpdate()
+    setDopen()
+    formik.resetForm();
   };
-  
-  let doctor = {
+
+
+  let doctors = {
     name: yup.string().required('enter name'),
-    email: yup.string().required('please enter email').email('please enter valid email'),
+    salary: yup.string().required('please enter salary'),
     degree: yup.string().required('please enter degree'),
-    fees: yup.number().required('please enter fees'),
+    experience: yup.string().required('please enter experience'),
   }
 
-  
-  let schema = yup.object().shape(doctor);
+
+  let schema = yup.object().shape(doctors);
 
   const formik = useFormik({
     initialValues: {
-      name:'',
-      email:'',
-      degree: '',
-      fees: ''
+      name: '',
+      salary:'',
+      quantity:'',
+      experience: ''
     },
     validationSchema: schema,
-    onSubmit: (value,{resetForm}) => {
-     handleSubmit(value)
-     resetForm();
+    onSubmit: (value, { resetForm }) => {
+      if(Update) {
+        handleupdate(value)
+      } else {
+        handleSubmitdata(value)
+      }
+      resetForm();
     }
   })
-  const handleSubmit = (value) => {
-    let data = {
-      id: Math.floor(Math.random() *1000),
-      ...value 
-  
-    }
-    console.log(data);
-   setOpen()
+
+  const handleupdate = (value) => {
+    let localdata = JSON.parse(localStorage.getItem("doctors"));
+    
+    let udata = localdata.map((l, i) => {
+      if(l.id === value.id) {
+          return value;
+      } else {
+        return l;
+      }
+    })
+    console.log(udata);
+
+    localStorage.setItem("doctors", JSON.stringify(udata))
+    setOpen(false)
+    setUpdate()
+    loadData()
   }
 
+  const handleSubmitdata = (value) => {
+    let localdata = JSON.parse(localStorage.getItem("doctors"));
+
+    console.log(localdata);
+    let data = {
+      id: Math.floor(Math.random() * 1000),
+      ...value
+    }
+
+    if (localdata === null) {
+      localStorage.setItem("doctors", JSON.stringify([data]))
+    } else {
+      localdata.push(data)
+      localStorage.setItem("doctors", JSON.stringify(localdata))
+    }
+
+    setOpen(false);
+    loadData()
+
+  }
+
+  const columns = [
+
+    { field: 'name', headerName: 'Name', width: 130 },
+    { field: 'salary', headerName: ' Salary', width: 130 },
+    { field: 'degree', headerName: 'Degree', width: 130 },
+    { field: 'experience', headerName: 'Experience', width: 130 },
+    {
+      field: 'delete', headerName: 'Delete', width: 130,
+      renderCell: (params) => (
+        <>
+          <IconButton aria-label="delete" onClick={() => handleClickDopen(params.row.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    },
+    {
+      field: 'edit', headerName: 'Edit', width: 130,
+      renderCell: (params) => (
+        <>
+          <IconButton aria-label="edit" onClick={() => handleEdit(params.row)}>
+            <CreateIcon />
+          </IconButton>
+        </>
+      )
+    }
+  ];
+
+  const handleEdit = (data) => {
+    setOpen(true);
+    setUpdate(data);
+    formik.setValues(data);
+
+  }
+
+  const handleDelete = () => {
+    let localData = JSON.parse(localStorage.getItem("doctors"))
+
+    let filterData = localData.filter((v, i) => v.id !== did);
+
+    localStorage.setItem("doctors", JSON.stringify(filterData));
+    loadData()
+    
+    setDopen(false)
+  }
+
+  const loadData = () => {
+    let localData = JSON.parse(localStorage.getItem("doctors"))
+
+    if (localData !== null) {
+      setData(localData)
+    }
+  }
+
+  useEffect(
+    () => {
+      loadData()
+    },
+    [])
+
   return (
-    <div>
-      <center>
-        <h1>Doctor List</h1>
-      <Button variant="outlined" onClick={handleClickOpen}>
-       Add doctor name
-      </Button>
-      </center>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Doctor information</DialogTitle>
-<Formik value={formik}>
-<Form onsubmit={handleSubmit}>
+
+
+    <Box>
+      <Container>
+        <div>
+          <center>
+            <Button variant="outlined" onClick={() => handleClickOpen()}>
+              Add Doctors
+            </Button>
+          </center>
+          <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={data}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              checkboxSelection
+            />
+
+          </div>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Add doctors</DialogTitle>
+            <Formik value={formik}>
+              <Form onSubmit={formik.handleSubmit}>
+                <DialogContent>
+
+                  <TextField
+                    margin="dense"
+                    id="name"
+                    label="name"
+                    type="name"
+                    fullWidth
+                    variant="standard"
+                    onChange={formik.handleChange}
+                    defaultValue={formik.values.name}
+                    helperText={formik.errors.name}
+                    error={formik.errors.name ? true : false}
+
+                  />
+
+                  <TextField
+                    margin="dense"
+                    id="salary"
+                    label="salary"
+                    type="salary"
+                    fullWidth
+                    variant="standard"
+                    onChange={formik.handleChange}
+                    defaultValue={formik.values.salary}
+                    helperText={formik.errors.salary}
+                    error={formik.errors.salary ? true : false}
+                  />
+                  <TextField
+                    margin="dense"
+                    id="degree"
+                    label="degree"
+                    fullWidth
+                    variant="standard"
+                    onChange={formik.handleChange}
+                    defaultValue={formik.values.degree}
+                    helperText={formik.errors.degree}
+                    error={formik.errors.degree ? true : false}
+
+                  />
+                  <TextField
+                    margin="dense"
+                    id="experience"
+                    label="experience"
+                    fullWidth
+                    variant="standard"
+                    onChange={formik.handleChange}
+                    defaultValue={formik.values.experience}
+                    helperText={formik.errors.experience}
+                    error={formik.errors.experience ? true : false}
+                  />
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    {
+                      Update ?
+                      <Button type="submit">Update</Button>
+                       :
+                      <Button type="submit">Submit</Button>
+                    }
+                  </DialogActions>
+                </DialogContent>
+              </Form>
+            </Formik>
+          </Dialog>
+          <div>
+      <Dialog
+        open={dopen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are You Sure Delete doctors Data ...? "}
+        </DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            name="name"
-            margin="dense"
-            id="name"
-            label="Name "
-            type="name"
-            fullWidth
-            variant="standard"
-            onChange={formik.handleSubmit}
-            defaultValue={formik.values.name}
-            helperText={formik.errors.name}
-            error={formik.errors.name ? true : false}
-            he
-          />
-          {  formik.errors.name ? <p> {formik.errors.name }</p> : null }
-             <TextField
-            autoFocus
-            margin="dense"
-            name="email"
-            id="email"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-            onChange={formik.handleSubmit}
-            defaultValue={formik.values.email}
-            helperText={formik.errors.email}
-            error={formik.errors.email ? true : false}
-
-          />
-           {  formik.errors.email ? <p> {formik.errors. email}</p> : null }
-             <TextField
-            autoFocus
-            margin="dense"
-            name="degree"
-            id="degree"
-            label="Degree"
-            type="Degree"
-            fullWidth
-            variant="standard"
-            onChange={formik.handleSubmit}
-            defaultValue={formik.values.degree}
-            helperText={formik.errors.degree}
-            error={formik.errors.degree ? true : false}
-          />
-
-{  formik.errors.degree ? <p> {formik.errors. degree}</p> : null }
-             <TextField
-            autoFocus
-            margin="dense"
-            name="fees"
-            id="fees"
-            label="Fees"
-            type="number"
-            fullWidth
-            variant="standard"
-            onChange={formik.handleSubmit}
-            defaultValue={formik.values.fees}
-            helperText={formik.errors.fees}
-            error={formik.errors.fees ? true : false}
-          />
-          
-{  formik.errors.fees ? <p> {formik.errors. fees}</p> : null }
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type={'submit'}>Submit</Button>
-        </DialogActions>
+          <DialogContentText id="alert-dialog-description">
+         
+          </DialogContentText>
         </DialogContent>
-        </Form>
-</Formik>
+        <DialogActions>
+          <Button onClick={() => handleDelete()} autofocus>yes</Button>
+          <Button onClick={handleClose}>No</Button>
+        </DialogActions>
       </Dialog>
     </div>
-  );
+        </div>
+      </Container>
+    </Box>
+
+  )
 }

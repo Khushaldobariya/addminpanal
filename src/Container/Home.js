@@ -16,9 +16,6 @@ function Home(props) {
     },[])
    
 
-
-
-
     const IncrementCounter = () => {
             SetCount (() => Count+1)
 
