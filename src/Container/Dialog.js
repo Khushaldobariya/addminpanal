@@ -22,12 +22,12 @@ export default function Medicine() {
 
   const handleClickOpen = () => {
     setOpen(true);
-    resetForm()
+  
   };
 
   const handleClose = () => {
     setOpen(false);
-    resetForm()
+ 
   };
 
 
