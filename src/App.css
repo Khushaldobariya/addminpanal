@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+.login{
+  font-family:monospace;
+  font-size:60px;
+
+}
+Form{
+  background-image: linear-gradient(rgb(84, 182, 167), rgb(115, 186, 159));
+}
+input{
+  color:#000;
+  background: rgb(213, 227, 170);
+}

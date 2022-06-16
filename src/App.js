@@ -7,6 +7,7 @@ import medicine from './Container/medicine';
 import  Email from './Container/Email';
 import  Doctor from './Container/Doctor';
 import  Dialog  from './Container/Dialog';
+import Login from './Container/Login';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route exact path={"/medicine"} component={medicine} />
       <Route exact path={"/Dialog"} component={Dialog} />
       <Route exact path={"/Doctor"} component={Doctor} />
+      <Route exact path={"/Login"} component={Login} />
       
     </Switch>
   </MiniDrawer>

@@ -1,54 +1,79 @@
-import React from 'react';
-import  { useState, useEffect } from 'react';
-import logo512 from  './Images/logo512.png'
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+
 function Home(props) {
+  const [Data, SetData] = useState([]);
+  const [ApiData , SetApiData] = useState();
 
-    const [ Count , SetCount] = useState (0)
-    const [Img , SetImage ] = useState (false)
+
+  useEffect(() => {
+    axios
+      .get(" https://reqres.in/api/user")
+      .then((res) => {
+        SetData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  console.log(Data.data);
   
-    useEffect(() => {
-        SetImage(true);
-    
-    },[Count])
-    useEffect(() => {
-        SetImage(false);
+  return (
+  
+    { 
       
-    },[])
-   
-
-    const IncrementCounter = () => {
-            SetCount (() => Count+1)
-
-    }   
-    const   DecrementCounter  = () => {
-        if (Count > 0) {
-            SetCount (() => Count-1)
-        }
+      Data?.data?.map((NewData) => {
+        return(
+      <div>
+      console.log(NewData.id)
+     <table class="table table-hover table-dark  table-responsive">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">ID</th>
+      <th scope="col">NAME</th>
+      <th scope="col">YEAR</th>
+      <th scope="col">COLOR</th>
+      <th scope="col">PANTONE_VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>{}</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Larry</td>
+      <td>the Bird</td>
+      <td>@twitter</td>
+    </tr>
+  </tbody>
+    </table>   
     
-    } 
+    </div>
+    )
+  })
+  
+}
 
 
-   
-   
-    
-    return (
-
-
-
-        <div>
-            <center>
-                <h1>HOME</h1>
-                 <button onClick={IncrementCounter} >+</button>
-                 <span>{Count}</span>
-                 <button onClick={DecrementCounter} >-</button> 
-                 </center>
-
-
-                 <img className={Img ? "d-block" : "d-none"} src={ logo512}/>
-           
-        </div>
-    
-    );
+      <div>
+        <center>
+          <h1 className="font-monospace">HOME</h1>
+          <div className="container">
+          </div>
+        </center>
+      </div>
+  );
 }
 
 export default Home;
