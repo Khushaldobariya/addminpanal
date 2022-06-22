@@ -16,7 +16,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 
 
+
+
+
+
 export default function Doctors() {
+
+  
   const [open, setOpen] = React.useState(false);
   const [data, setData] = useState([]);
   const [Update, setUpdate] = useState();
@@ -175,9 +181,9 @@ export default function Doctors() {
 
     <Box>
       <Container>
-        <div>
+        <div>  
           <center>
-            <Button variant="outlined" onClick={() => handleClickOpen()}>
+            <Button variant="contained" onClick={() => handleClickOpen()}>
               Add Doctors
             </Button>
           </center>
@@ -203,7 +209,7 @@ export default function Doctors() {
                     label="name"
                     type="name"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     onChange={formik.handleChange}
                     defaultValue={formik.values.name}
                     helperText={formik.errors.name}
@@ -217,7 +223,7 @@ export default function Doctors() {
                     label="salary"
                     type="salary"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     onChange={formik.handleChange}
                     defaultValue={formik.values.salary}
                     helperText={formik.errors.salary}
@@ -228,7 +234,7 @@ export default function Doctors() {
                     id="degree"
                     label="degree"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     onChange={formik.handleChange}
                     defaultValue={formik.values.degree}
                     helperText={formik.errors.degree}
@@ -240,19 +246,19 @@ export default function Doctors() {
                     id="experience"
                     label="experience"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     onChange={formik.handleChange}
                     defaultValue={formik.values.experience}
                     helperText={formik.errors.experience}
                     error={formik.errors.experience ? true : false}
                   />
                   <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button variant="contained" onClick={handleClose}>Cancel</Button>
                     {
                       Update ?
-                      <Button type="submit">Update</Button>
+                      <Button variant="contained" type="submit">Update</Button>
                        :
-                      <Button type="submit">Submit</Button>
+                      <Button variant="contained" type="submit">Submit</Button>
                     }
                   </DialogActions>
                 </DialogContent>
