@@ -15,6 +15,8 @@ function Home(props) {
   const [open, setOpen] = React.useState(false);
   const [img, setImg] = React.useState([]);
   const [imgPath, setImgPath] = useState("");
+  const [error, setError] = useState(" ");
+
   useEffect(() => {
     axios
       .get(`https://reqres.in/api/user`)
@@ -27,8 +29,8 @@ function Home(props) {
   }, []);
 
   const handleClickOpen = () => {
-    setImg ([]);
-    setImgPath ( " ");
+    setImg([]);
+    setImgPath(" ");
     setOpen(true);
   };
 
@@ -36,17 +38,45 @@ function Home(props) {
     setOpen(false);
   };
 
-  const handleUpLoad = () => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      setImgPath(reader.result);
-    });
-    reader.readAsDataURL(img);
- 
-    // setOpen(false);
+  const handleUpLoad = (e) => {
+    if (img?.length === 0) {
+      let error = {};
+      if (img?.length === 0) error.img = "Image is required !";
+
+      return setError({ ...error });
+    } else {
+      setOpen(false);
+    }
+
+    //   setImg(e.target.files[0]);
+    //   const reader = new FileReader();
+    //   reader.addEventListener("load", () => {
+    //     console.log(reader.result);
+    //     setImgPath(reader.result);
+    //   });
+
+    //   reader.readAsDataURL(e.target.files[0]);
   };
-  console.log(imgPath);
+
+  // const handleUpLoad = (e) => {
+  //   setImg(e.target.files[0]);
+  //   const reader = new FileReader();
+  //   reader.addEventListener("load", () => {
+  //     console.log(reader.result);
+  //     setImgPath(reader.result);
+  //   });
+
+  //   reader.readAsDataURL(e.target.files[0]);
+
+  //   // setOpen(false);
+  // };
   // console.log(img);
+
+  const handleLoad = (event) => {
+    setImg(event.target.files[0]);
+
+    setImgPath(URL.createObjectURL(event.target.files[0]));
+  };
   return (
     <>
       <div>
@@ -56,7 +86,7 @@ function Home(props) {
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>IAMGE</DialogTitle>
           <DialogContent>
-            <TextField
+            <input
               autoFocus
               margin="dense"
               id="img"
@@ -64,13 +94,16 @@ function Home(props) {
               type="file"
               fullWidth
               variant="standard"
-              onChange={(e) => setImg(e.target.files[0]) }
+              onChange={(e) => handleLoad(e)}
             />
-            <img src={imgPath} width={100}/>
+
+            {imgPath && <img src={imgPath} width={100} />}
+
+            {error.img && error.img}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            {/* <Button onClick={handleUpLoad}>Upload</Button> */}
+            <Button onClick={(e) => handleUpLoad(e)}>Upload</Button>
           </DialogActions>
         </Dialog>
       </div>
