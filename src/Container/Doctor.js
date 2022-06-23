@@ -1,34 +1,31 @@
- import React, { useEffect, useState } from 'react'
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContentText from '@mui/material/DialogContentText';
-import * as yup from 'yup';
-import { Form, Formik, useFormik } from 'formik';
-import { DataGrid } from '@mui/x-data-grid';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CreateIcon from '@mui/icons-material/Create';
-
-
-
-
-
+import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContentText from "@mui/material/DialogContentText";
+import * as yup from "yup";
+import { Form, Formik, useFormik } from "formik";
+import { DataGrid } from "@mui/x-data-grid";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CreateIcon from "@mui/icons-material/Create";
 
 export default function Doctors() {
-
-  
   const [open, setOpen] = React.useState(false);
   const [data, setData] = useState([]);
   const [Update, setUpdate] = useState();
   const [dopen, setDopen] = React.useState(false);
-  const [did, setDid] = useState()
+  const [did, setDid] = useState();
+  const [filterData, setFilterData] = useState([]);
 
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleClickDopen = (id) => {
     setDopen(true);
@@ -37,63 +34,60 @@ export default function Doctors() {
 
   const handleClickOpen = () => {
     setOpen(true);
-    setUpdate()
-
+    setUpdate();
   };
 
   const handleClose = () => {
     setOpen(false);
-    setUpdate()
-    setDopen()
+    setUpdate();
+    setDopen();
     formik.resetForm();
   };
 
-
   let doctors = {
-    name: yup.string().required('enter name'),
-    salary: yup.string().required('please enter salary'),
-    degree: yup.string().required('please enter degree'),
-    experience: yup.string().required('please enter experience'),
-  }
-
+    name: yup.string().required("enter name"),
+    salary: yup.string().required("please enter salary"),
+    degree: yup.string().required("please enter degree"),
+    experience: yup.string().required("please enter experience"),
+  };
 
   let schema = yup.object().shape(doctors);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      salary:'',
-      quantity:'',
-      experience: ''
+      name: "",
+      salary: "",
+
+      experience: "",
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
-      if(Update) {
-        handleupdate(value)
+      if (Update) {
+        handleupdate(value);
       } else {
-        handleSubmitdata(value)
+        handleSubmitdata(value);
       }
       resetForm();
-    }
-  })
+    },
+  });
 
   const handleupdate = (value) => {
     let localdata = JSON.parse(localStorage.getItem("doctors"));
-    
+
     let udata = localdata.map((l, i) => {
-      if(l.id === value.id) {
-          return value;
+      if (l.id === value.id) {
+        return value;
       } else {
         return l;
       }
-    })
+    });
     console.log(udata);
 
-    localStorage.setItem("doctors", JSON.stringify(udata))
-    setOpen(false)
-    setUpdate()
-    loadData()
-  }
+    localStorage.setItem("doctors", JSON.stringify(udata));
+    setOpen(false);
+    setUpdate();
+    loadData();
+  };
 
   const handleSubmitdata = (value) => {
     let localdata = JSON.parse(localStorage.getItem("doctors"));
@@ -101,108 +95,129 @@ export default function Doctors() {
     console.log(localdata);
     let data = {
       id: Math.floor(Math.random() * 1000),
-      ...value
-    }
+      ...value,
+    };
 
     if (localdata === null) {
-      localStorage.setItem("doctors", JSON.stringify([data]))
+      localStorage.setItem("doctors", JSON.stringify([data]));
     } else {
-      localdata.push(data)
-      localStorage.setItem("doctors", JSON.stringify(localdata))
+      localdata.push(data);
+      localStorage.setItem("doctors", JSON.stringify(localdata));
     }
 
     setOpen(false);
-    loadData()
-
-  }
+    loadData();
+  };
 
   const columns = [
-
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'salary', headerName: ' Salary', width: 130 },
-    { field: 'degree', headerName: 'Degree', width: 130 },
-    { field: 'experience', headerName: 'Experience', width: 130 },
+    { field: "name", headerName: "Name", width: 130 },
+    { field: "salary", headerName: " Salary", width: 130 },
+    { field: "degree", headerName: "Degree", width: 130 },
+    { field: "experience", headerName: "Experience", width: 130 },
     {
-      field: 'delete', headerName: 'Delete', width: 130,
+      field: "delete",
+      headerName: "Delete",
+      width: 130,
       renderCell: (params) => (
         <>
-          <IconButton aria-label="delete" onClick={() => handleClickDopen(params.row.id)}>
+          <IconButton
+            aria-label="delete"
+            onClick={() => handleClickDopen(params.row.id)}
+          >
             <DeleteIcon />
           </IconButton>
         </>
-      )
+      ),
     },
     {
-      field: 'edit', headerName: 'Edit', width: 130,
+      field: "edit",
+      headerName: "Edit",
+      width: 130,
       renderCell: (params) => (
         <>
           <IconButton aria-label="edit" onClick={() => handleEdit(params.row)}>
             <CreateIcon />
           </IconButton>
         </>
-      )
-    }
+      ),
+    },
   ];
 
   const handleEdit = (data) => {
     setOpen(true);
     setUpdate(data);
     formik.setValues(data);
-
-  }
+  };
 
   const handleDelete = () => {
-    let localData = JSON.parse(localStorage.getItem("doctors"))
+    let localData = JSON.parse(localStorage.getItem("doctors"));
 
     let filterData = localData.filter((v, i) => v.id !== did);
 
     localStorage.setItem("doctors", JSON.stringify(filterData));
-    loadData()
-    
-    setDopen(false)
-  }
+    loadData();
+
+    setDopen(false);
+  };
 
   const loadData = () => {
-    let localData = JSON.parse(localStorage.getItem("doctors"))
+    let localData = JSON.parse(localStorage.getItem("doctors"));
 
     if (localData !== null) {
-      setData(localData)
+      setData(localData);
     }
-  }
+  };
 
-  useEffect(
-    () => {
-      loadData()
-    },
-    [])
+  const handleSearch = (val) => {
+    let localdata = JSON.parse(localStorage.getItem("doctor"));
+    console.log(val);
+
+    let fdata = localdata?.filter(
+      (l) =>
+        val === l.id?.toString().includes(val) ||
+        val === l.name?.toString().toLowerCase().includes(val.toLowerCase()) ||
+        val === l.salary?.toString().includes(val) ||
+        val === l.degree?.toString().includes(val) ||
+        val === l.experience?.toString().includes(val)
+    );
+    setFilterData(fdata);
+    console.log(fdata);
+  };
+  let finalData = filterData?.length > 0 ? filterData : data;
 
   return (
-
-
     <Box>
       <Container>
-        <div>  
+        <div>
           <center>
             <Button variant="contained" onClick={() => handleClickOpen()}>
               Add Doctors
             </Button>
+            <TextField
+              margin="dense"
+              id="search"
+              label="Search Doctor"
+              type="name"
+              fullWidth
+              variant="outlined"
+              placeholder="Search Doctor"
+              onChange={(e) => handleSearch(e.target.value)}
+            />
           </center>
-          <div style={{ height: 400, width: '100%' }}>
+          <div style={{ height: 400, width: "100%" }}>
             <DataGrid
-              rows={data}
+              rows={finalData}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}
               checkboxSelection
             />
-
           </div>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add doctors</DialogTitle>
             <Formik value={formik}>
               <Form onSubmit={formik.handleSubmit}>
                 <DialogContent>
-
                   <TextField
                     margin="dense"
                     id="name"
@@ -214,7 +229,6 @@ export default function Doctors() {
                     defaultValue={formik.values.name}
                     helperText={formik.errors.name}
                     error={formik.errors.name ? true : false}
-
                   />
 
                   <TextField
@@ -239,7 +253,6 @@ export default function Doctors() {
                     defaultValue={formik.values.degree}
                     helperText={formik.errors.degree}
                     error={formik.errors.degree ? true : false}
-
                   />
                   <TextField
                     margin="dense"
@@ -253,42 +266,46 @@ export default function Doctors() {
                     error={formik.errors.experience ? true : false}
                   />
                   <DialogActions>
-                    <Button variant="contained" onClick={handleClose}>Cancel</Button>
-                    {
-                      Update ?
-                      <Button variant="contained" type="submit">Update</Button>
-                       :
-                      <Button variant="contained" type="submit">Submit</Button>
-                    }
+                    <Button variant="contained" onClick={handleClose}>
+                      Cancel
+                    </Button>
+                    {Update ? (
+                      <Button variant="contained" type="submit">
+                        Update
+                      </Button>
+                    ) : (
+                      <Button variant="contained" type="submit">
+                        Submit
+                      </Button>
+                    )}
                   </DialogActions>
                 </DialogContent>
               </Form>
             </Formik>
           </Dialog>
           <div>
-      <Dialog
-        open={dopen}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Are You Sure Delete doctors Data ...? "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-         
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleDelete()} autofocus>yes</Button>
-          <Button onClick={handleClose}>No</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+            <Dialog
+              open={dopen}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Are You Sure Delete doctors Data ...? "}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description"></DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => handleDelete()} autofocus>
+                  yes
+                </Button>
+                <Button onClick={handleClose}>No</Button>
+              </DialogActions>
+            </Dialog>
+          </div>
         </div>
       </Container>
     </Box>
-
-  )
+  );
 }
