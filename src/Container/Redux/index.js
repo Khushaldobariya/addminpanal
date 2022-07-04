@@ -1,2 +1,6 @@
-export const INRIMENT_COUNTER = "INCRIMENT_CONTER"
-export const DERIMENT_COUNTER = "DECRIMENT_CONTER"
+import { combineReducers } from "redux";
+import { CounterReducer } from "./Reducer/Counter.Reducer";
+
+export const rootReducer = combineReducers({
+  Counter : CounterReducer,
+});

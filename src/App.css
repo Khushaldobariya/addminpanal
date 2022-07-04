@@ -48,3 +48,8 @@ input{
   color:#000;
   background: rgb(213, 227, 170);
 }
+.img {
+  background-size: cover;
+  width: 75px;
+  height: 75px;
+}

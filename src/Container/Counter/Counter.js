@@ -1,31 +1,31 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {incrementCounter, decrementCounter} from "../Redux/Reducer/Counter.Reducer";
+import {incrementCounter, decrementCounter} from "../Redux/Action/Counter.Action";
 
 function Counter(props) {
   const C = useSelector((state) => state.Counter);
   const dispatch = useDispatch();
 
-  const handleDecrement = () => {
+  const handleIncrement = () => {
     dispatch(incrementCounter());
   };
-  const handleIncrement = () => {
+  const handleDecrement = () => {
     dispatch(decrementCounter());
   };
   return (
-    <div className="container">
+    <div className="container text-center">
       <button
         type="button"
         className="btn btn-outline-warning p-2 my-2 btn-default"
         onClick={handleIncrement}
-      ></button>
+      >Increment</button>
 
-      <p className="fw-bold">{C.Counter}</p>
+      <p className="fw-bold mt-2">{C.Counter}</p>
       <button
         type="button"
-        className="btn btn-outline-warning p-2 my-2 btn-default"
+        className="btn btn-outline-danger p-2 my-2 btn-default"
         onClick={handleDecrement}
-      ></button>
+      >Decrement</button>
     </div>
   );
 }

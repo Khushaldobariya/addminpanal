@@ -8,11 +8,15 @@ import  Email from './Container/Email';
 import  Doctor from './Container/Doctor';
 import  Dialog  from './Container/Dialog';
 import Login from './Container/Login';
+import { Provider } from "react-redux";
+import './App.css'
+import { ConfiguerStore } from "./Container/Redux/store";
 import Counter from './Container/Counter/Counter';
 
 function App() {
+  const store = ConfiguerStore ()
   return (
- 
+ <Provider store={store}> 
   <MiniDrawer>
     <Switch>
       <Route exact path={"/"} component={Home} />
@@ -25,6 +29,7 @@ function App() {
       
     </Switch>
   </MiniDrawer>
+  </Provider>
   );
 }
 

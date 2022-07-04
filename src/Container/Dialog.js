@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+
+import React ,{ useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -10,75 +11,84 @@ import DialogTitle from '@mui/material/DialogTitle';
 import * as yup from 'yup';
 import { Form, Formik, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
-import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-
-export default function Medicine() {
+function Medicine(props) {
   const [open, setOpen] = React.useState(false);
-  const [data, setData] = useState([]);
-  const [update, setUpdate] = useState([]);
+  const [data, setData] = useState([])
+  const [Update, setUpdate] = useState()
+const [filterdata , setfilterdata] = useState([]);
+
+  const handleDelete = (id) => {
+    let localData = JSON.parse(localStorage.getItem('User'));
+    let filterData = localData.filter((d, i) => d.id !== id);
+    localStorage.setItem("User", JSON.stringify(filterData))
+    loadData()
+
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
-  
   };
 
   const handleClose = () => {
     setOpen(false);
- 
   };
 
 
-  let medicine = {
+  let Doctor = {
+
     name: yup.string().required('enter name'),
-    price: yup.string().required('please enter price'),
-    quantity: yup.string().required('please enter quantity'),
-    expiry: yup.string().required('please enter expiry'),
+    designation: yup.string().required('please enter designation'),
+    salary: yup.string().required('please enter salary'),
+
+
   }
 
 
-  let schema = yup.object().shape(medicine);
+  let schema = yup.object().shape(Medicine);
 
   const formik = useFormik({
     initialValues: {
-      name:'',
-      price:'',
-      quantity: '',
-      expiry: ''
+      name: '',
+      designation: '',
+      salary: '',
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
-      if(update){
-
-        handleUpdate(value)
-      }else{
+      if (Update) {
+        handleUpdateData(value)
+      } else {
         handleSubmitdata(value)
       }
       resetForm();
     }
-  })
-  const handleUpdate = (value) => {
-    let localdata = JSON.parse(localStorage.getItem("medicine"));
-    
-    let udata = localdata.map((l, i) => {
-      if(l.id === value.id) {
-          return value;
+  });
+
+  const handleUpdateData = (value) => {
+    let localData = JSON.parse(localStorage.getItem("User"));
+    let uData = localData.map((l, i) => {
+      if (l.id === value.id) {
+        return value
       } else {
         return l;
       }
     })
-    console.log(udata);
 
-    localStorage.setItem("medicine", JSON.stringify(udata))
-    setOpen(false)
-    setUpdate()
-    loadData()
+    localStorage.setItem("User", JSON.stringify(uData));
+
+    setOpen(false);
+    setUpdate();
+    loadData();
+    console.log(uData);
+
   }
 
+
+
   const handleSubmitdata = (value) => {
-    let localdata = JSON.parse(localStorage.getItem("medicine"));
+    let localdata = JSON.parse(localStorage.getItem("User"))
 
     let data = {
       id: Math.floor(Math.random() * 1000),
@@ -86,105 +96,109 @@ export default function Medicine() {
     }
 
     if (localdata === null) {
-      localStorage.setItem("medicine", JSON.stringify([data]))
+      localStorage.setItem("User", JSON.stringify([data]))
     } else {
       localdata.push(data)
-      localStorage.setItem("medicine", JSON.stringify(localdata))
+      localStorage.setItem("User", JSON.stringify(localdata))
     }
 
     setOpen(false);
-
-
-  }
-  const columns = [
-
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'price', headerName: ' Price', width: 130 },
-    { field: 'quantity', headerName: 'Quantity', width: 130 },
-    { field: 'expiry', headerName: 'Expiry', width: 130 },
-
-
-
-    { field: 'delete', headerName: 'Delete', width: 130,
-    renderCell: (params) => (
-      <IconButton aria-label="Delete" onClick={() => handleDelete(params.row.id)}>
-        <DeleteIcon />
-      </IconButton>
-      
-    )
-  },
-  { field: 'Edit', headerName: 'Edit', width: 130 ,
-  renderCell: (params) => (
-    <IconButton aria-label="Edit" onClick={()  => handleEdit(params.row)}>
-      <EditIcon />
-    </IconButton>
-  )
-}
-
-  ];
-
-const handleEdit = (data) => {
-  setOpen(true);
-  setUpdate(data);
-  formik.setValues(data);
-}
-
-  const handleDelete = (id) => {
-    let localData = JSON.parse(localStorage.getItem("medicine"))
-
-    let filterdata = localData.filter((v, i) => v.id !== id);
-
-    localStorage.setItem("medicine",JSON.stringify(filterdata));
-
     loadData()
 
   }
 
-  const loadData = ()  => {
-    let localData = JSON.parse(localStorage.getItem("medicine"))
+  const columns1 = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'name', headerName: 'Name', width: 130 },
+    { field: 'designation', headerName: ' designation', width: 130 },
+    { field: 'salary', headerName: 'salary', width: 130 },
+    {
+      field: 'action', headerName: 'acton', width: 260,
+      renderCell: (params) => (
+        <>
+          <Button variant="outlined" onClick={() => handleDelete(params.row.id)} startIcon={<DeleteIcon />}>
+            Delete
+          </Button>
+          <Button variant="contained" onClick={() => handleEdit(params.row)} endIcon={<EditIcon />}>
+            Update
+          </Button>
+        </>
+      )
+    },
+  ];
 
-    if (loadData !== null){
+  const loadData = () => {
+    let localData = JSON.parse(localStorage.getItem("User"))
+
+    if (localData !== null) {
       setData(localData)
     }
   }
 
-  useEffect ( 
-    () =>{
+  useEffect(
+    () => {
       loadData()
     },
     [])
 
- 
+  const handleEdit = (data) => {
+    setOpen(true);
+    setUpdate(data);
+    formik.setValues(data)
+
+  }
+
+  const handlesearch = (serval) => {
+    let serdata = JSON.parse(localStorage.getItem("User"));
+  
+
+    let fdata = serdata.filter((l) =>(
+      l.id.toString().includes(serval.toString()) ||
+      l.name.toString().toLowerCase().includes(serval.toLowerCase()) ||
+      l.designation.toString().includes(serval) ||
+      l.salary.toString().includes(serval)
+  ))
+
+  setfilterdata(fdata);
+    }
+
+
+
+    const filterfinal = filterdata.length > 0 ? filterdata : data;
+
   return (
+
+
     <Box>
       <Container>
+
+        <TextField
+          margin="dense"
+          id="search"
+          label="search"
+          fullWidth
+          variant="standard"
+          onChange={(e) => handlesearch(e.target.value)}
+        />
         <div>
-          <center>
-          
-{
-  update ?  <Button variant="outlined" onClick={handleClickOpen}>
-  Edit Medicine
- </Button> :  <Button variant="outlined" onClick={handleClickOpen}>
- Add Medicine
-</Button>
-}
- 
-          </center>
+          <Button variant="outlined" onClick={handleClickOpen}>
+            Add User
+          </Button>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
-              rows={data}
-              columns={columns}
+              rows={filterfinal}
+              columns={columns1}
               pageSize={5}
               rowsPerPageOptions={[5]}
               checkboxSelection
             />
-
           </div>
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add Medicine</DialogTitle>
-         <Formik value={formik}>
-         <Form onSubmit={formik.handleSubmit}>
+            <DialogTitle>Add User</DialogTitle>
+            <Formik value={formik}>
+              <Form onSubmit={formik.handleSubmit}>
                 <DialogContent>
+
                   <TextField
                     margin="dense"
                     id="name"
@@ -192,7 +206,7 @@ const handleEdit = (data) => {
                     type="name"
                     fullWidth
                     variant="standard"
-                    onChange={formik.handleSubmit}
+                    onChange={formik.handleChange}
                     defaultValue={formik.values.name}
                     helperText={formik.errors.name}
                     error={formik.errors.name ? true : false}
@@ -200,55 +214,49 @@ const handleEdit = (data) => {
 
                   <TextField
                     margin="dense"
-                    id="price"
-                    label="price"
-                    type="price"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleSubmit}
-                    defaultValue={formik.values.price}
-                    helperText={formik.errors.price}
-                    error={formik.errors.price ? true : false}
-             
-                  />
-                  <TextField
-                    margin="dense"
-                    id="quantity"
-                    label="quantity"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleSubmit}
-                    defaultValue={formik.values.quantity}
-                    helperText={formik.errors.quantity}
-                    error={formik.errors.quantity ? true : false}
-      
-                  />
-                  <TextField
-                    margin="dense"
-                    id="expiry"
-                    label="expiry"
+                    id="designation"
+                    label="designation"
+                    type="designation"
                     fullWidth
                     variant="standard"
                     onChange={formik.handleChange}
-                    defaultValue={formik.values.expiry}
-                    helperText={formik.errors.expiry}
-                    error={formik.errors.expiry ? true : false}
+                    defaultValue={formik.values.designation}
+                    helperText={formik.errors.designation}
+                    error={formik.errors.designation ? true : false}
                   />
+                  <TextField
+                    margin="dense"
+                    id="salary"
+                    label="salary"
+                    fullWidth
+                    variant="standard"
+                    onChange={formik.handleChange}
+                    defaultValue={formik.values.salary}
+                    helperText={formik.errors.salary}
+                    error={formik.errors.salary ? true : false}
+
+                  />
+
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                   { 
-                        update?  <Button  onClick={handleUpdate}>Edit</Button> :
-                      <Button type="submit">Submit</Button>
-                      }
+                    {
+                      Update ?
+                        <Button type="submit">Update</Button>
+                        :
+                        <Button type="submit">Submit</Button>
+
+                    }
+
                   </DialogActions>
                 </DialogContent>
-                </Form>
-         </Formik>
-             
+              </Form>
+            </Formik>
           </Dialog>
         </div>
       </Container>
     </Box>
-
   )
+
 }
+
+export default Dialog;

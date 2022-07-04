@@ -132,7 +132,17 @@ function Home(props) {
                       <td>{NewData.year}</td>
                       <td>{NewData.color}</td>
                       <td>{NewData.pantone_value}</td>
-                      <td>{NewData.pantone_value}</td>
+                      <td>
+                        <img
+                          styel={{
+                            backgroundSize: "cover",
+                            width: "75px",
+                            height:"75px"
+                          }}
+                          className="img"
+                          src={imgPath}
+                        />
+                      </td>
                     </tr>
                   );
                 }

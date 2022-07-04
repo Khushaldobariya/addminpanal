@@ -8,7 +8,8 @@ function medicine(props) {
       
         <Box>
             <Container>
-            <center>    
+            <center>  
+               
                  <h1>Medicine</h1>
             </center>
             </Container>
