@@ -183,6 +183,7 @@ export default function Doctors() {
       <Container>
         <div>  
           <center>
+            
             <Button variant="contained" onClick={() => handleClickOpen()}>
               Add Doctors
             </Button>

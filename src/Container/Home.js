@@ -74,7 +74,6 @@ function Home(props) {
 
   const handleLoad = (event) => {
     setImg(event.target.files[0]);
-
     setImgPath(URL.createObjectURL(event.target.files[0]));
   };
   return (

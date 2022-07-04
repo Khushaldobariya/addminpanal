@@ -108,7 +108,8 @@ export default function MiniDrawer({ children }) {
         { lable: "mdicine", icon: <MedicalServicesIcon />, to: "/medicine" },
         { lable: "Email", icon: <MailIcon />, to: "/Email" },
         { lable: "Doctor" , icon: <PersonIcon />, to: "/Doctor" },
-        { lable: "Login" , icon: <LoginIcon />, to: "/Login" }
+        { lable: "Login" , icon: <LoginIcon />, to: "/Login" },
+        { lable: "Login" , icon: <LoginIcon />, to: "/Counter" }
 
     ]
 

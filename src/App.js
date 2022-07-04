@@ -8,6 +8,7 @@ import  Email from './Container/Email';
 import  Doctor from './Container/Doctor';
 import  Dialog  from './Container/Dialog';
 import Login from './Container/Login';
+import Counter from './Container/Counter/Counter';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route exact path={"/Dialog"} component={Dialog} />
       <Route exact path={"/Doctor"} component={Doctor} />
       <Route exact path={"/Login"} component={Login} />
+      <Route exact path={"/Counter"} component={Counter} />
       
     </Switch>
   </MiniDrawer>
