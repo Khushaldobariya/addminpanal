@@ -1,32 +1,33 @@
+import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import * as yup from "yup";
+import { Form, Formik, useFormik } from "formik";
+import { DataGrid } from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
-import React ,{ useEffect, useState } from 'react'
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import * as yup from 'yup';
-import { Form, Formik, useFormik } from 'formik';
-import { DataGrid } from '@mui/x-data-grid';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import { medicine } from "./Redux/Action/medicine.action";
+import { useDispatch } from "react-redux";
 
 function Medicine(props) {
   const [open, setOpen] = React.useState(false);
-  const [data, setData] = useState([])
-  const [Update, setUpdate] = useState()
-const [filterdata , setfilterdata] = useState([]);
+  const [data, setData] = useState([]);
+  const [Update, setUpdate] = useState();
+  const [filterdata, setfilterdata] = useState([]);
 
   const handleDelete = (id) => {
-    let localData = JSON.parse(localStorage.getItem('User'));
+    let localData = JSON.parse(localStorage.getItem("User"));
     let filterData = localData.filter((d, i) => d.id !== id);
-    localStorage.setItem("User", JSON.stringify(filterData))
-    loadData()
-
-  }
+    localStorage.setItem("User", JSON.stringify(filterData));
+    loadData();
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,45 +37,40 @@ const [filterdata , setfilterdata] = useState([]);
     setOpen(false);
   };
 
-
   let Doctor = {
-
-    name: yup.string().required('enter name'),
-    designation: yup.string().required('please enter designation'),
-    salary: yup.string().required('please enter salary'),
-
-
-  }
-
+    name: yup.string().required("enter name"),
+    designation: yup.string().required("please enter designation"),
+    salary: yup.string().required("please enter salary"),
+  };
 
   let schema = yup.object().shape(Medicine);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      designation: '',
-      salary: '',
+      name: "",
+      designation: "",
+      salary: "",
     },
     validationSchema: schema,
     onSubmit: (value, { resetForm }) => {
       if (Update) {
-        handleUpdateData(value)
+        handleUpdateData(value);
       } else {
-        handleSubmitdata(value)
+        handleSubmitdata(value);
       }
       resetForm();
-    }
+    },
   });
 
   const handleUpdateData = (value) => {
     let localData = JSON.parse(localStorage.getItem("User"));
     let uData = localData.map((l, i) => {
       if (l.id === value.id) {
-        return value
+        return value;
       } else {
         return l;
       }
-    })
+    });
 
     localStorage.setItem("User", JSON.stringify(uData));
 
@@ -82,96 +78,95 @@ const [filterdata , setfilterdata] = useState([]);
     setUpdate();
     loadData();
     console.log(uData);
-
-  }
-
-
+  };
 
   const handleSubmitdata = (value) => {
-    let localdata = JSON.parse(localStorage.getItem("User"))
+    let localdata = JSON.parse(localStorage.getItem("User"));
 
     let data = {
       id: Math.floor(Math.random() * 1000),
-      ...value
-    }
+      ...value,
+    };
 
     if (localdata === null) {
-      localStorage.setItem("User", JSON.stringify([data]))
+      localStorage.setItem("User", JSON.stringify([data]));
     } else {
-      localdata.push(data)
-      localStorage.setItem("User", JSON.stringify(localdata))
+      localdata.push(data);
+      localStorage.setItem("User", JSON.stringify(localdata));
     }
 
     setOpen(false);
-    loadData()
-
-  }
+    loadData();
+  };
 
   const columns1 = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'designation', headerName: ' designation', width: 130 },
-    { field: 'salary', headerName: 'salary', width: 130 },
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "name", headerName: "Name", width: 130 },
+    { field: "designation", headerName: " designation", width: 130 },
+    { field: "salary", headerName: "salary", width: 130 },
     {
-      field: 'action', headerName: 'acton', width: 260,
+      field: "action",
+      headerName: "acton",
+      width: 260,
       renderCell: (params) => (
         <>
-          <Button variant="outlined" onClick={() => handleDelete(params.row.id)} startIcon={<DeleteIcon />}>
+          <Button
+            variant="outlined"
+            onClick={() => handleDelete(params.row.id)}
+            startIcon={<DeleteIcon />}
+          >
             Delete
           </Button>
-          <Button variant="contained" onClick={() => handleEdit(params.row)} endIcon={<EditIcon />}>
+          <Button
+            variant="contained"
+            onClick={() => handleEdit(params.row)}
+            endIcon={<EditIcon />}
+          >
             Update
           </Button>
         </>
-      )
+      ),
     },
   ];
 
   const loadData = () => {
-    let localData = JSON.parse(localStorage.getItem("User"))
+    let localData = JSON.parse(localStorage.getItem("User"));
 
     if (localData !== null) {
-      setData(localData)
+      setData(localData);
     }
-  }
-
-  useEffect(
-    () => {
-      loadData()
-    },
-    [])
+  };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    loadData();
+    dispatch(medicine)
+  }, []);
 
   const handleEdit = (data) => {
     setOpen(true);
     setUpdate(data);
-    formik.setValues(data)
-
-  }
+    formik.setValues(data);
+  };
 
   const handlesearch = (serval) => {
     let serdata = JSON.parse(localStorage.getItem("User"));
-  
 
-    let fdata = serdata.filter((l) =>(
-      l.id.toString().includes(serval.toString()) ||
-      l.name.toString().toLowerCase().includes(serval.toLowerCase()) ||
-      l.designation.toString().includes(serval) ||
-      l.salary.toString().includes(serval)
-  ))
+    let fdata = serdata.filter(
+      (l) =>
+        l.id.toString().includes(serval.toString()) ||
+        l.name.toString().toLowerCase().includes(serval.toLowerCase()) ||
+        l.designation.toString().includes(serval) ||
+        l.salary.toString().includes(serval)
+    );
 
-  setfilterdata(fdata);
-    }
+    setfilterdata(fdata);
+  };
 
-
-
-    const filterfinal = filterdata.length > 0 ? filterdata : data;
+  const filterfinal = filterdata.length > 0 ? filterdata : data;
 
   return (
-
-
     <Box>
       <Container>
-
         <TextField
           margin="dense"
           id="search"
@@ -184,7 +179,7 @@ const [filterdata , setfilterdata] = useState([]);
           <Button variant="outlined" onClick={handleClickOpen}>
             Add User
           </Button>
-          <div style={{ height: 400, width: '100%' }}>
+          <div style={{ height: 400, width: "100%" }}>
             <DataGrid
               rows={filterfinal}
               columns={columns1}
@@ -198,7 +193,6 @@ const [filterdata , setfilterdata] = useState([]);
             <Formik value={formik}>
               <Form onSubmit={formik.handleSubmit}>
                 <DialogContent>
-
                   <TextField
                     margin="dense"
                     id="name"
@@ -234,19 +228,15 @@ const [filterdata , setfilterdata] = useState([]);
                     defaultValue={formik.values.salary}
                     helperText={formik.errors.salary}
                     error={formik.errors.salary ? true : false}
-
                   />
 
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    {
-                      Update ?
-                        <Button type="submit">Update</Button>
-                        :
-                        <Button type="submit">Submit</Button>
-
-                    }
-
+                    {Update ? (
+                      <Button type="submit">Update</Button>
+                    ) : (
+                      <Button type="submit">Submit</Button>
+                    )}
                   </DialogActions>
                 </DialogContent>
               </Form>
@@ -255,8 +245,7 @@ const [filterdata , setfilterdata] = useState([]);
         </div>
       </Container>
     </Box>
-  )
-
+  );
 }
 
 export default Dialog;
