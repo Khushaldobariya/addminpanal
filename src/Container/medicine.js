@@ -12,8 +12,8 @@ function medicine(props) {
                
                  <h1>Medicine</h1>
             </center>
-            </Container>
             <Dialog />
+            </Container>
         </Box>
     );
 }   

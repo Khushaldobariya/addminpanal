@@ -6,8 +6,16 @@ const initialState = {
   error: " ",
 };
 
-export const medicine = (state = initialState, action) => {
+export const medicineReducer = (state = initialState, action) => {
+  console.log(action.type, action.payload);
   switch (action.type) {
+    case actionTypes.LODAING_MEDICINE:
+      return {
+        ...state,
+        isLoading: true,
+        error: "",
+      };
+
     case actionTypes.GET_MEDICINE:
       return {
         ...state,

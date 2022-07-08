@@ -12,15 +12,18 @@ import { Form, Formik, useFormik } from "formik";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-
 import { medicine } from "./Redux/Action/medicine.action";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-function Medicine(props) {
+export default function Medicine(props) {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = useState([]);
   const [Update, setUpdate] = useState();
   const [filterdata, setfilterdata] = useState([]);
+
+  const medicines = useSelector((state) => state.medicine);
+
+  console.log(medicines);
 
   const handleDelete = (id) => {
     let localData = JSON.parse(localStorage.getItem("User"));
@@ -102,8 +105,10 @@ function Medicine(props) {
   const columns1 = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 130 },
-    { field: "designation", headerName: " designation", width: 130 },
-    { field: "salary", headerName: "salary", width: 130 },
+    { field: "age", headerName: "age", width: 130 },
+    { field: "status", headerName: " status", width: 130 },
+    { field: "author", headerName: " author", width: 130 },
+
     {
       field: "action",
       headerName: "acton",
@@ -136,10 +141,11 @@ function Medicine(props) {
       setData(localData);
     }
   };
+
   const dispatch = useDispatch();
   useEffect(() => {
-    loadData();
-    dispatch(medicine)
+    dispatch(medicine());
+    // loadData();
   }, []);
 
   const handleEdit = (data) => {
@@ -165,87 +171,91 @@ function Medicine(props) {
   const filterfinal = filterdata.length > 0 ? filterdata : data;
 
   return (
-    <Box>
-      <Container>
-        <TextField
-          margin="dense"
-          id="search"
-          label="search"
-          fullWidth
-          variant="standard"
-          onChange={(e) => handlesearch(e.target.value)}
-        />
-        <div>
-          <Button variant="outlined" onClick={handleClickOpen}>
-            Add User
-          </Button>
-          <div style={{ height: 400, width: "100%" }}>
-            <DataGrid
-              rows={filterfinal}
-              columns={columns1}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              checkboxSelection
+    <>
+      {medicines.isLoading ? (
+        <p>loading...</p>
+      ) : (
+        <Box>
+          <Container>
+            <TextField
+              margin="dense"
+              id="search"
+              label="search"
+              fullWidth
+              variant="standard"
+              onChange={(e) => handlesearch(e.target.value)}
             />
-          </div>
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add User</DialogTitle>
-            <Formik value={formik}>
-              <Form onSubmit={formik.handleSubmit}>
-                <DialogContent>
-                  <TextField
-                    margin="dense"
-                    id="name"
-                    label="name"
-                    type="name"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleChange}
-                    defaultValue={formik.values.name}
-                    helperText={formik.errors.name}
-                    error={formik.errors.name ? true : false}
-                  />
+            <div>
+              <Button variant="outlined" onClick={handleClickOpen}>
+                Add User
+              </Button>
+              <div style={{ height: 400, width: "100%" }}>
+                <DataGrid
+                  rows={medicines.medicine}
+                  columns={columns1}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  checkboxSelection
+                />
+              </div>
+              <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Add User</DialogTitle>
+                <Formik value={formik}>
+                  <Form onSubmit={formik.handleSubmit}>
+                    <DialogContent>
+                      <TextField
+                        margin="dense"
+                        id="name"
+                        label="name"
+                        type="name"
+                        fullWidth
+                        variant="standard"
+                        onChange={formik.handleChange}
+                        defaultValue={formik.values.name}
+                        helperText={formik.errors.name}
+                        error={formik.errors.name ? true : false}
+                      />
 
-                  <TextField
-                    margin="dense"
-                    id="designation"
-                    label="designation"
-                    type="designation"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleChange}
-                    defaultValue={formik.values.designation}
-                    helperText={formik.errors.designation}
-                    error={formik.errors.designation ? true : false}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="salary"
-                    label="salary"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleChange}
-                    defaultValue={formik.values.salary}
-                    helperText={formik.errors.salary}
-                    error={formik.errors.salary ? true : false}
-                  />
+                      <TextField
+                        margin="dense"
+                        id="designation"
+                        label="designation"
+                        type="designation"
+                        fullWidth
+                        variant="standard"
+                        onChange={formik.handleChange}
+                        defaultValue={formik.values.designation}
+                        helperText={formik.errors.designation}
+                        error={formik.errors.designation ? true : false}
+                      />
+                      <TextField
+                        margin="dense"
+                        id="salary"
+                        label="salary"
+                        fullWidth
+                        variant="standard"
+                        onChange={formik.handleChange}
+                        defaultValue={formik.values.salary}
+                        helperText={formik.errors.salary}
+                        error={formik.errors.salary ? true : false}
+                      />
 
-                  <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    {Update ? (
-                      <Button type="submit">Update</Button>
-                    ) : (
-                      <Button type="submit">Submit</Button>
-                    )}
-                  </DialogActions>
-                </DialogContent>
-              </Form>
-            </Formik>
-          </Dialog>
-        </div>
-      </Container>
-    </Box>
+                      <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        {Update ? (
+                          <Button type="submit">Update</Button>
+                        ) : (
+                          <Button type="submit">Submit</Button>
+                        )}
+                      </DialogActions>
+                    </DialogContent>
+                  </Form>
+                </Formik>
+              </Dialog>
+            </div>
+          </Container>
+        </Box>
+      )}
+    </>
   );
 }
-
-export default Dialog;

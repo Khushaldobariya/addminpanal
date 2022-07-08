@@ -2,8 +2,11 @@ import { BASE_URL } from "../../../baseurl";
 import * as actionTypes from "../ActionType";
 
 export const medicine = () => (dispatch) => {
+
   try {
-    fetch(BASE_URL + "medicine")
+    dispatch(lodingMedicine())
+    setTimeout(function(){
+     return  fetch(BASE_URL + "posts")
       .then(
         (response) => {
           if (response.ok) {
@@ -22,10 +25,16 @@ export const medicine = () => (dispatch) => {
         }
       )
       .then((response) => response.json())
-      .then((medicine) =>
-        dispatch({ type: actionTypes.GET_MEDICINE, payload: medicine })
+      .then(medicines =>
+        dispatch({ type: actionTypes.GET_MEDICINE, payload: medicines })
       );
+    },2000)
+   
   } catch (error) {
     console.log(error);
   }
 };
+
+export const lodingMedicine = () => (dispatch) => {
+  dispatch({ type: actionTypes.LODAING_MEDICINE})
+}
