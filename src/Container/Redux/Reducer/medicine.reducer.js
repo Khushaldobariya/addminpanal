@@ -43,7 +43,7 @@ export const medicineReducer = (state = initalState, action) => {
                         ...state,
                         isLoading: false,
                         medicine: state.medicine.map((upDate) => 
-                        upDate.id === action.payload.id ? action.payload : upDate
+                        upDate.id === action.payload.id ? return  action.payload : return upDate
                         ),
                         error: ''
                     }
