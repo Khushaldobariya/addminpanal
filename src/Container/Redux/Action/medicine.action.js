@@ -1,5 +1,7 @@
 import { BASE_URL } from "../../../baseurl";
 import * as ActionTypes from "../ActionType";
+ import { toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 
 export const Medicinedata = () => (dispatch) => {
   try {
@@ -26,6 +28,7 @@ export const Medicinedata = () => (dispatch) => {
         )
         .then((response) => response.json())
         .then((medicines) =>
+               
           dispatch({ type: ActionTypes.GET_MEDICINE, payload: medicines })
         )
         .catch((error) => dispatch(errorMedicine(error.message)));
@@ -67,6 +70,11 @@ export const postMedicine = (data) => (dispatch) => {
         )
         .then((response) => response.json())
         .then((medicines) =>
+               if (res.data.status === true) {
+        toast("success", "Upload is successful");
+      } else  {
+        setToast("error","Upload is not successful")
+      }
           dispatch({ type: ActionTypes.POST_MEDICINE, payload: medicines })
         )
         .catch((error) => dispatch(errorMedicine(error.message)));
@@ -98,7 +106,12 @@ export const DeleteMedicine = (id) => (dispatch) => {
         }
       )
       .then((response) => response.json())
-      .then(dispatch({ type: ActionTypes.DELETE_MEDICINE, payload: id }))
+      .then  if (res.data.status === true) {
+        toast("success", "Delete is successful");
+      } else  {
+        toast("error","Delete is not successful")
+      }
+    (dispatch({ type: ActionTypes.DELETE_MEDICINE, payload: id }))
       .catch((error) => dispatch(errorMedicine(error.message)));
   } catch (error) {
     dispatch(errorMedicine(error));
