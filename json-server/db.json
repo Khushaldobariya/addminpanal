@@ -1,27 +1,39 @@
 {
   "posts": [
     {
-      "id": 2
+      "id": 2,
+      "name": "pqr",
+      "price": "190",
+      "quantity": "23",
+      "expiry": "2023"
     },
     {
-      "id": 3
+      "id": 3,
+      "name": "abc",
+      "price": "30",
+      "quantity": "52",
+      "expiry": "2024"
     },
     {
-      "id": 735,
+      "id": 4,
       "name": "xyz",
       "price": "1",
       "quantity": "2",
       "expiry": "3"
     },
     {
-      "id": 100,
+      "id": 5,
       "name": "abc ",
       "price": "78.22",
       "quantity": "80",
       "expiry": "2025"
     },
     {
-      "id": 543
+      "id": 6,
+      "name": "demo",
+      "price": "80",
+      "quantity": "200",
+      "expiry": "2025"
     }
   ],
   "doctors": [
