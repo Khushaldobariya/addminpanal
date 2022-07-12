@@ -1,49 +1,47 @@
 {
-    "medicines": [
-      {
-        "id": 2,
-        "name": "abc",
-        "price": 120,
-        "expiry": 2014
-      },
-      {
-        "id": 3,
-        "name": "demo",
-        "price": 321,
-        "expiry": 2015
-      },
-      {
-        "id": 5,
-        "name": "somil",
-        "price": 321,
-        "expiry": 2016
-      },
-      {
-        "id": 735,
-        "name": "xyz",
-        "price": "1",
-        "quantity": "2",
-        "expiry": "3"
-      }
-    ],
-    "doctors": [
-      {
-        "id": 5,
-        "name": "khusal",
-        "salary": 12500
-      },
-      {
-        "id": 5,
-        "name": "ravi",
-        "salary": 20000
-      },
-      {
-        "id": 5,
-        "name": "milan",
-        "salary": 14200
-      }
-    ],
-    "profile": {
-      "name": "typicode"
+  "posts": [
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "id": 735,
+      "name": "xyz",
+      "price": "1",
+      "quantity": "2",
+      "expiry": "3"
+    },
+    {
+      "id": 100,
+      "name": "abc ",
+      "price": "78.22",
+      "quantity": "80",
+      "expiry": "2025"
+    },
+    {
+      "id": 543
     }
+  ],
+  "doctors": [
+    {
+      "id": 5,
+      "name": "khusal",
+      "salary": 12500
+    },
+    {
+      "id": 5,
+      "name": "ravi",
+      "salary": 20000
+    },
+    {
+      "id": 5,
+      "name": "milan",
+      "salary": 14200
+    }
+  ],
+  "profile": {
+    "name": "typicode"
   }
+}

@@ -30,6 +30,24 @@ export const medicineReducer = (state = initalState, action) => {
                 medicine: state.medicine.concat(action.payload),
                 error: ''
             }
+            case ActionTypes.DELETE_MEDICINE:
+                return {
+                    ...state,
+                    isLoading: false,
+                    medicine: state.medicine.filter((l) =>l.id !== action.payload),
+                    error: ''
+                }
+                case ActionTypes.UPDATE_MEDICINE:
+
+                    return {
+                        ...state,
+                        isLoading: false,
+                        medicine: state.medicine.map((upDate) => 
+                        upDate.id === action.payload.id ? action.payload : upDate
+                        ),
+                        error: ''
+                    }
+
         case ActionTypes.ERROR_MEDICINE:
             return {
                 ...state,
