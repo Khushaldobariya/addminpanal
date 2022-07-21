@@ -7,7 +7,7 @@ const initalState = {
 }
 
 export const medicineReducer = (state = initalState, action) => {
-    // console.log(action.type, action.payload);
+    console.log(action.type, action.payload);
 
     switch (action.type) {
         case ActionTypes.LOADING_MEDICINE:
@@ -24,6 +24,7 @@ export const medicineReducer = (state = initalState, action) => {
                 error: ''
             }
         case ActionTypes.POST_MEDICINE:
+            console.log(action.payload);
             return {
                 ...state,
                 isLoading: false,

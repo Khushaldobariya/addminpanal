@@ -1,139 +1,58 @@
+import axios from "axios";
 import { BASE_URL } from "../../../baseurl";
 import * as ActionTypes from "../ActionType";
 
+// GET AXIOS
 export const Medicinedata = () => (dispatch) => {
-  try {
-    dispatch(loadingMedicine());
-
-    setTimeout(function () {
-      fetch(BASE_URL + "posts")
-        .then(
-          (response) => {
-            if (response.ok) {
-              return response;
-            } else {
-              var error = new Error(
-                "Error " + response.status + ": " + response.statusText
-              );
-              error.response = response;
-              throw error;
-            }
-          },
-          (error) => {
-            var errmess = new Error(error.message);
-            throw errmess;
-          }
-        )
-        .then((response) => response.json())
-        .then((medicines) =>
-          dispatch({ type: ActionTypes.GET_MEDICINE, payload: medicines })
-        )
-        .catch((error) => dispatch(errorMedicine(error.message)));
-    }, 2000);
-  } catch (error) {
-    dispatch(errorMedicine(error));
-    console.log(error);
-  }
+  axios
+    .get(BASE_URL + "posts")
+    .then((response) => {
+      dispatch({ type: ActionTypes.GET_MEDICINE, payload: response.data });
+    })
+    .catch((error) => console.log(error));
 };
+
+// add data form axios
 
 export const postMedicine = (data) => (dispatch) => {
-  try {
-    dispatch(loadingMedicine());
-
-    setTimeout(function () {
-      fetch(BASE_URL + "posts", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then(
-          (response) => {
-            if (response.ok) {
-              return response;
-            } else {
-              var error = new Error(
-                "Error " + response.status + ": " + response.statusText
-              );
-              error.response = response;
-              throw error;
-            }
-          },
-          (error) => {
-            var errmess = new Error(error.message);
-            throw errmess;
-          }
-        )
-        .then((response) => response.json())
-        .then((medicines) =>
-          dispatch({ type: ActionTypes.POST_MEDICINE, payload: medicines })
-        )
-        .catch((error) => dispatch(errorMedicine(error.message)));
-    }, 2000);
-  } catch (error) {
-    dispatch(errorMedicine(error));
-  }
-};
-export const DeleteMedicine = (id) => (dispatch) => {
-  try {
-    fetch(BASE_URL + "posts/" + id, {
-      method: "DELETE",
+  axios
+    .post(BASE_URL + "posts", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
-      .then(
-        (response) => {
-          if (response.ok) {
-            return response;
-          } else {
-            var error = new Error(
-              "Error " + response.status + ": " + response.statusText
-            );
-            error.response = response;
-            throw error;
-          }
-        },
-        (error) => {
-          var errmess = new Error(error.message);
-          throw errmess;
-        }
-      )
-      .then((response) => response.json())
-      .then(dispatch({ type: ActionTypes.DELETE_MEDICINE, payload: id }))
-      .catch((error) => dispatch(errorMedicine(error.message)));
-  } catch (error) {
-    dispatch(errorMedicine(error));
-  }
+    .then((res) => {
+      dispatch({ type: ActionTypes.POST_MEDICINE, payload: res.data });
+    })
+    .catch((error) => console.log(error));
 };
+
+// update data form axios
 
 export const UpdateMedicine = (data) => (dispatch) => {
   try {
-    fetch(BASE_URL + "posts/" + data.id, {
-      method: "PUT",
-    })
-      .then(
-        (response) => {
-          if (response.ok) {
-            return response;
-          } else {
-            var error = new Error(
-              "Error " + response.status + ": " + response.statusText
-            );
-            error.response = response;
-            throw error;
-          }
-        },
-        (error) => {
-          var errmess = new Error(error.message);
-          throw errmess;
-        }
-      )
-      .then((response) => response.json())
-      .then((medicines) =>
-        dispatch({ type: ActionTypes.UPDATE_MEDICINE, payload: medicines })
+    axios
+      .put(BASE_URL + "posts/" + data.id)
+      .then((res) =>
+        dispatch({ type: ActionTypes.UPDATE_MEDICINE, payload: res.medicines })
       )
       .catch((error) => dispatch(errorMedicine(error.message)));
   } catch (error) {
     dispatch(errorMedicine(error.message));
+  }
+};
+// delete medicine form axios 
+export const DeleteMedicine = (id) => (dispatch) => {
+  try {
+    axios
+      .delete(BASE_URL + "posts/" + id)
+
+      .then((response) => {
+        dispatch({ type: ActionTypes.DELETE_MEDICINE, payload: response.id });
+      })
+      .catch((error) => dispatch(errorMedicine(error.message)));
+  } catch (error) {
+    dispatch(errorMedicine(error));
   }
 };
 

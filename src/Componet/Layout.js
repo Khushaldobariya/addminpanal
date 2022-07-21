@@ -110,7 +110,9 @@ export default function MiniDrawer({ children }) {
         { lable: "Email", icon: <MailIcon />, to: "/Email" },
         { lable: "Doctor" , icon: <PersonIcon />, to: "/Doctor" },
         { lable: "Login" , icon: <LoginIcon />, to: "/Login" },
-        { lable: "Counter" , icon: <CountertopsIcon />, to: "/Counter" }
+        { lable: "Counter" , icon: <CountertopsIcon />, to: "/Counter" },
+        { lable: "Counter" , icon: <CountertopsIcon />, to: "/PromiseExmple" }
+
 
     ]
 
